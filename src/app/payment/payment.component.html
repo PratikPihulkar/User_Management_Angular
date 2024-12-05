@@ -1,0 +1,230 @@
+<div class="mdiv">
+    <div class="insideMdiv">
+        
+            <div class="topDiv">
+                <div class=" p-5 pb-1">
+                <button class="btn btn-sm btn-outline-secondary " (click)="clickBack()"> <i class="bi bi-arrow-left"></i> Back</button>
+                </div>
+                <div class="">
+                </div>
+            </div>
+
+
+        <div class="bottomDiv row ">
+
+            <div class="leftDiv col">
+                <h3>{{planName}}</h3>
+                
+                <br>
+                <div class="">
+                        <div class="option-box1" [class.selected]="selectedPlanValidity === 'monthly'" (click)="selectPlanOption('monthly')">
+                            <span>Pay Monthly </span> &nbsp;&nbsp;<sub> {{monthlyPrise}}/per Month</sub>
+                            
+                        </div>
+                        <br>
+                        <div class="option-box1" [class.selected]="selectedPlanValidity === 'yearly'" (click)="selectPlanOption('yearly')">
+                             <span>Pay yearly</span> &nbsp;&nbsp; <sub> {{yearlyPrice}}/per Month</sub>
+                        </div>
+                </div>
+            <hr>
+                <div class="d-flex justify-content-between">
+                    <div class="">
+                        <h6>Total:</h6>
+                    </div>
+                    <div class="">
+                        <h6> {{calculateTotal() | currency : 'INR'}}</h6>
+                    </div>
+                </div>
+
+    </div>
+
+            <div class="rightDiv col">
+                <h6></h6>
+                <h3>Upgrade to {{planName}} </h3>
+                <p>Do more with unlimited blocks, files, automation and Integretion.</p>
+             
+                
+                <div class="form-group">
+                    <label>Select Payment Method:</label>
+                    <div class="">
+                        <div class="payment-options ">
+                            <div class="option-box  " [class.selected]="selectedOption === 'Credit Card'" (click)="selectOption('Credit Card')">
+                                <i class="bi bi-credit-card"></i>
+                                <span>Card</span>
+                            </div>
+                            <div class="option-box " [class.selected]="selectedOption === 'UPI'" (click)="selectOption('UPI')">
+                                <i class="bi bi-phone"></i>
+                                <span>UPI</span>
+                            </div>
+                            <div class="option-box " [class.selected]="selectedOption === 'Bank Transfer'" (click)="selectOption('Bank Transfer')">
+                                <i class="bi bi-bank"></i>
+                                <span>Bank Transfer</span>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                  <br>
+
+
+                  <form action="" [formGroup]="cardForm" >
+
+                    <div class="cardPayment" *ngIf="selectedOption=='Credit Card'" >
+
+                        <label for="name">Name:</label>
+                        <input type="text" class="form-control" formControlName="name"   pattern="^[a-zA-Z\s]+$"  required>
+                        
+                            <div *ngIf="cardForm.get('name')?.touched && cardForm.get('name')?.invalid">
+                                  <small class="text-danger" *ngIf="cardForm.controls['name']?.invalid && cardForm.controls['name']?.touched">
+                                    Name is required and must contain only letters.
+                                  </small>
+                            </div>
+                            <br>
+
+                            <div class="col">
+                                <label for="">Card No:</label>
+                                <input type="text"  class="form-control" formControlName="card_no"  pattern="^[0-9]{16}$" required>
+                                  <small class="text-danger" *ngIf="cardForm.controls['card_no']?.invalid && cardForm.controls['card_no']?.touched">
+                                    Card number must be 16 digits.
+                                  </small>
+
+                            </div>
+
+                            <br>
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="">Expiry:</label>
+                                        <input type="text"  class="form-control" formControlName="expiry" pattern="^(0[1-9]|1[0-2])/([0-9]{2})$" required>
+                                        
+                                        <small class="text-danger" *ngIf="cardForm.get('expiry')?.invalid && cardForm.get('expiry')?.touched" class="text-danger">
+                                            Expiry must be in MM/YY format.
+                                        </small>
+                                    </div>
+
+                                    <div class="col">
+                                        <label for="">CVV:</label>
+                                        <input type="text"  class="form-control" formControlName="cvv"  pattern="^[0-9]{3}$">
+                                          <small class="text-danger" *ngIf="cardForm.get('cvv')?.invalid && cardForm.get('cvv')?.touched" class="text-danger">
+                                            CVV must be 3 digits.
+                                          </small>
+                                    </div>
+                                </div>
+                            <br>
+                            <div class="row g-3" >
+                                <div class="col-12 col-md ">
+                                    <button class="btn btn-danger btn-lg w-100 cancleBtn" cancleBtn>Cancel</button>
+                                </div>
+                                <div class="col-12 col-md"> 
+                                    <button class="btn btn-success btn-lg w-100 submitBtn" type="submit"  [disabled]="cardForm.invalid" (click)="paymentByCard()" >Proceed Payment</button>
+                                </div>
+                            </div>
+ 
+                    </div>
+                </form>
+
+
+                <form action="" [formGroup]="upiForm" >
+                    <div class="upiPayment"  *ngIf="selectedOption=='UPI'" >
+                   
+                        <label for="name">Name:</label>
+                        <input type="text" class="form-control" formControlName="name"   pattern="^[a-zA-Z\s]+$"  required >
+                        <div *ngIf="upiForm.get('name')?.touched && upiForm.get('name')?.invalid">
+                             <small class="text-danger" *ngIf="cardForm.controls['name']?.invalid && upiForm.controls['name']?.touched">
+                                Name is required and must contain only letters.
+                              </small>
+                        </div>
+                        <br>
+                        
+                            <div class="row">
+                                <div class="col">
+                                    <label for="">UPI id:</label>
+                                    <input type="text" class="form-control" formControlName="upi_id"  pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+$" required>
+                                        <small class="text-danger" class="text-danger" *ngIf="upiForm.get('upi_id').invalid && upiForm.get('upi_id').touched" >
+                                                Please enter a valid UPI ID 
+                                        </small>
+                                </div>
+                                <div class="col">
+                                    <label for="">Gmail:</label>
+                                    <input type="text" class="form-control" formControlName="gmail" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+                                        <small class="text-danger" class="text-danger" *ngIf="upiForm.get('gmail').invalid && upiForm.get('gmail').touched" >
+                                            Please enter a valid email 
+                                        </small>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row g-3" >
+                                <div class="col-12 col-md ">
+                                    <button class="btn btn-danger btn-lg w-100 cancleBtn" cancleBtn>Cancel</button>
+                                </div>
+                                <div class="col-12 col-md"> 
+                                    <button class="btn btn-success btn-lg w-100 submitBtn" (click)="paymentByUPI()" [disabled]="upiForm.invalid">Proceed Payment</button>
+                                </div>
+                            </div>
+                    </div>
+                </form>
+
+
+                <form action="" [formGroup]="bankTransferForm" >
+                    <div class="bankTransfer" *ngIf="selectedOption=='Bank Transfer'">
+
+
+
+                        <div class="row">
+                            <div class="col">
+                                <label for="">Bank Name:</label>
+                                <input type="text" class="form-control" formControlName="bank_name" pattern="^[a-zA-Z\s]{3,50}$" placeholder=" 3-50 characters">
+                                <small class="text-danger" class="text-danger" *ngIf="bankTransferForm.get('bank_name').invalid && bankTransferForm.get('bank_name').touched" >
+                                    Please enter a valid Bank Name 
+                                </small>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+
+                                <div class="col">
+                                    <label for="">Account no:</label>
+                                    <input type="text" class="form-control"  formControlName="account_no"   pattern="^\d{9,18}$">
+                                    <small class="text-danger" class="text-danger" *ngIf="bankTransferForm.get('account_no').invalid && bankTransferForm.get('account_no').touched" >
+                                        Please enter a valid Account No
+                                    </small>
+                                </div>
+
+                                <div class="col">
+                                    <label for="">IFSC:</label>
+                                    <input type="text" class="form-control"  formControlName="ifsc" pattern="^[A-Z]{4}0[A-Z0-9]{6}$"  placeholder="e.g., SBIN0123456">
+                                    <small class="text-danger" class="text-danger" *ngIf="bankTransferForm.get('ifsc').invalid && bankTransferForm.get('ifsc').touched" >
+                                        Please enter a valid IFSC
+                                    </small>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="col">
+                                <label for="">Branch Name:</label>
+                                <input type="text" class="form-control" formControlName="branch" pattern="^[a-zA-Z\s]{3,50}$">
+                                <small class="text-danger" class="text-danger" *ngIf="bankTransferForm.get('branch').invalid && bankTransferForm.get('branch').touched" >
+                                    Please enter a valid Branch
+                                </small>
+                            </div>
+                            <br>
+                            <div class="row g-3" >
+                                <div class="col-12 col-md ">
+                                    <button class="btn btn-danger btn-lg w-100 cancleBtn" cancleBtn>Cancel</button>
+                                </div>
+                                <div class="col-12 col-md"> 
+                                    <button class="btn btn-success btn-lg w-100 submitBtn" (click)="paymentByBankTransfer()" [disabled]="bankTransferForm.invalid">Proceed Payment</button>
+                                </div>
+                            </div>
+                    </div>
+                </form>
+
+
+
+                
+
+            </div>
+         
+
+        </div>
+
+ </div>
+
+</div>

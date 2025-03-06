@@ -31,6 +31,7 @@ export class PaymentComponent {
   constructor(  private fb: FormBuilder, private dataStoreService: DataStoreServiceService,private route:Router,private router:ActivatedRoute) {
     
     this.id=parseInt(this.router.snapshot.paramMap.get('id'));
+    
     this.dataStoreService.getPlanById(this.id).subscribe(
       (res) => {
         this.planData = res.data;  

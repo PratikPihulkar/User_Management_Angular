@@ -16,7 +16,9 @@ export class DataStoreServiceService {
   private isLoggedInSubject = new BehaviorSubject<boolean>(this.checkInitialLoginStatus());
   isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
-  constructor(private http:HttpClient, private route:Router, @Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(private http:HttpClient, private route:Router, @Inject(PLATFORM_ID) private platformId: Object) {
+    
+  }
 
   private baseUrl = environment.apiUrl;
 
